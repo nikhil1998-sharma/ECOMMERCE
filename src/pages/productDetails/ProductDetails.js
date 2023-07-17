@@ -1,24 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./ProductDetails.scss";
 import dummyImg from "../../assets/naruto.jpeg";
+import { useParams } from "react-router-dom";
+import { axiosClient } from "../../utils/axiosClient";
+import Loader from "../../components/loader/Loader";
 
 function ProductDetails() {
+  const params = useParams();
+  const productKey = params.productId;
+  const [product, setProduct] = useState(null);
+
+  async function fetchProduct() {
+    const productResponse = await axiosClient.get(
+      `/products?filters[key][$eq]=${productKey}&populate=image`
+    );
+    if (productResponse.data.data.length > 0) {
+      setProduct(productResponse.data.data[0]);
+    }
+    // console.log("Product response : ", productResponse);
+  }
+
+  useEffect(() => {
+    setProduct(null);
+    fetchProduct();
+  }, [params]);
+
+  if (!product) {
+    return <Loader />;
+  }
+
+  // console.log("Params : ", params);
+
   return (
     <div className="ProductDetail">
       <div className="container">
         <div className="product-layout">
-          <div className="product-img center">
-            <img src={dummyImg} alt="product image" />
+          <div className="product-img">
+            <img
+              src={product?.attributes?.image?.data?.attributes?.url}
+              alt="product image"
+            />
           </div>
           <div className="product-info">
-            <h1 className="heading">This is the Title, wall poster</h1>
-            <h3 className="price">$ 549</h3>
-            <p className="description">
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quasi
-              nemo minus atque quia et, voluptas dolorum cumque quis itaque a
-              dignissimos pariatur molestias facilis fugit aspernatur laborum
-              impedit expedita nostrum!
-            </p>
+            <h1 className="heading">{product?.attributes?.title}</h1>
+            <h3 className="price">$ {product?.attributes?.price}</h3>
+            <p className="description">{product?.attributes?.desc}</p>
             <div className="cart-options">
               <div className="quantity-selector">
                 <span className="btn decrement">-</span>
