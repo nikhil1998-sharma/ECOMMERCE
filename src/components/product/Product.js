@@ -9,7 +9,7 @@ function Product({ product }) {
   return (
     <div
       className="Product"
-      onClick={() => navigate(`/products/${product.attributes.key}`)}
+      onClick={() => navigate(`/products/${product?.attributes?.key}`)}
     >
       <div className="product-container">
         <div className="product-img">
@@ -23,7 +23,7 @@ function Product({ product }) {
         </div>
         <div className="product-info">
           <p className="title">{product?.attributes?.title}</p>
-          <p className="price">${product?.attributes?.price}</p>
+          <p className="price">₹ {product?.attributes?.price}</p>
         </div>
       </div>
     </div>

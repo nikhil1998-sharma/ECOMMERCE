@@ -1,12 +1,21 @@
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/home/Home";
-import Categories from "./pages/categories/Categories";
+import Categories from "./pages/collection/Collection";
 import Navbar from "./components/navbar/Navbar";
 import ProductDetails from "./pages/productDetails/ProductDetails";
 import Footer from "./components/footer/Footer";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { fetchCategories } from "./redux/CategorySlice";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchCategories());
+  }, []);
+
   return (
     <div className="Appp">
       <Navbar />

@@ -4,11 +4,18 @@ import dummyImg from "../../assets/naruto.jpeg";
 import { useParams } from "react-router-dom";
 import { axiosClient } from "../../utils/axiosClient";
 import Loader from "../../components/loader/Loader";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart, removeFromCart } from "../../redux/cartSlice";
 
 function ProductDetails() {
   const params = useParams();
   const productKey = params.productId;
   const [product, setProduct] = useState(null);
+  const dispatch = useDispatch();
+
+  const cart = useSelector((state) => state.cartReducer.cart);
+  const quantity =
+    cart.find((item) => item.key === params.productId)?.quantity || 0;
 
   async function fetchProduct() {
     const productResponse = await axiosClient.get(
@@ -43,15 +50,30 @@ function ProductDetails() {
           </div>
           <div className="product-info">
             <h1 className="heading">{product?.attributes?.title}</h1>
-            <h3 className="price">$ {product?.attributes?.price}</h3>
+            <h3 className="price">₹ {product?.attributes?.price}</h3>
             <p className="description">{product?.attributes?.desc}</p>
             <div className="cart-options">
               <div className="quantity-selector">
-                <span className="btn decrement">-</span>
-                <span className="quantity">3</span>
-                <span className="btn increment">+</span>
+                <span
+                  className="btn decrement"
+                  onClick={() => dispatch(removeFromCart(product))}
+                >
+                  -
+                </span>
+                <span className="quantity">{quantity}</span>
+                <span
+                  className="btn increment"
+                  onClick={() => dispatch(addToCart(product))}
+                >
+                  +
+                </span>
               </div>
-              <button className="btn-primary add-to-cart">Add To Cart</button>
+              <button
+                className="btn-primary add-to-cart"
+                onClick={() => dispatch(addToCart(product))}
+              >
+                Add To Cart
+              </button>
             </div>
             <div className="return-policy">
               <ul>
